@@ -4,6 +4,7 @@ import com.bigvideo.kxj.entity.BigPerson;
 import com.bigvideo.kxj.service.MaintainPerson;
 import com.bigvideo.kxj.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -64,12 +65,15 @@ public class UpdateAllController {
     }
 
     /**
-     * 获取科学家图片流
+     * 获取科学家图片
+     * @param id    人员ID
+     * @param response
+     * @throws IOException
      */
-    @RequestMapping(value = "/getPic", method = RequestMethod.GET)
-    public void getPic(HttpServletResponse response) throws IOException {
+    @RequestMapping(value = "getPic/{id}", method = RequestMethod.GET)
+    public void getPic(@PathVariable("id") int id, HttpServletResponse response) throws IOException {
 
-        File tarFile = personService.getPersonPic(1);
+        File tarFile = personService.getPersonPic(id);
 
         InputStream in = new FileInputStream(tarFile);
         int i = in.available();
