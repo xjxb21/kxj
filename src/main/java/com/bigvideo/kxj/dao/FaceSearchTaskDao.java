@@ -28,16 +28,28 @@ public class FaceSearchTaskDao {
      * 增加人脸对比任务
      * @param is
      * @param isLength
+     * @return  -1代表插入失败， 成功则返回主键ID
      */
-    public void addTask(final InputStream is, final int isLength) {
+    public int addTask(final InputStream is, final int isLength) {
 
-        String sql = "INSERT INTO FACESEARCHTASK (ID, FACEIMG) VALUES (FACECHECK_AUTOID.NEXTVAL, ?)";
-        jdbcTemplate.execute(sql, new AbstractLobCreatingPreparedStatementCallback(lobHandler) {
+        String sql = "SELECT FACECHECK_AUTOID.NEXTVAL FROM DUAL";
+
+        final Integer keyId = jdbcTemplate.queryForObject(sql, Integer.class);
+
+        sql = "INSERT INTO FACESEARCHTASK (ID, FACEIMG) VALUES (?, ?)";
+        int ret = jdbcTemplate.execute(sql, new AbstractLobCreatingPreparedStatementCallback(lobHandler) {
             @Override
             protected void setValues(PreparedStatement ps, LobCreator lobCreator) throws SQLException, DataAccessException {
-               lobCreator.setBlobAsBinaryStream(ps, 1, is, isLength);
+                ps.setInt(1, keyId.intValue());
+
+                lobCreator.setBlobAsBinaryStream(ps, 2, is, isLength);
             }
         });
 
+        if (ret < 1) {
+            return -1;
+        } else {
+            return keyId.intValue();
+        }
     }
 }

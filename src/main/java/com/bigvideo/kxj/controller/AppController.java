@@ -1,7 +1,6 @@
 package com.bigvideo.kxj.controller;
 
 import com.bigvideo.kxj.entity.BigPerson;
-import com.bigvideo.kxj.service.MaintainPerson;
 import com.bigvideo.kxj.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -9,45 +8,26 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.List;
 
 /**
  * Created by xiao on 2016/7/6.
+ * 应用功能
  */
-
 @RestController
-public class UpdateAllController {
+@RequestMapping(value = "app")
+public class AppController {
 
     @Autowired
     PersonService personService;
-
-    @Autowired
-    MaintainPerson maintain;
-
-    /**
-     * 更新EXCEL的信息和图片
-     *
-     * @return
-     */
-    @RequestMapping(value = "/updateAll")
-    public Msg updateAll() {
-        try {
-            maintain.updateAllPerson();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new Msg(0, "Update all excel info fail!");
-        }
-        return new Msg(1, "Update all excel info Success!");
-    }
 
     /**
      * 查询所有的科学家信息
      * @return
      */
-    @RequestMapping(value = "/getAllPerson", method = RequestMethod.GET)
+    @RequestMapping(value = "getAllPerson", method = RequestMethod.GET)
     public List<BigPerson> queryAllPerson(){
         List list = personService.queryPerson();
         return list;
@@ -58,7 +38,7 @@ public class UpdateAllController {
      *
      * @return
      */
-    @RequestMapping(value = "/updatePerson")
+    @RequestMapping(value = "updatePerson", method = RequestMethod.POST)
     public Msg updateSingle() {
         //personService.updatePerson();
         return null;
@@ -117,24 +97,5 @@ public class UpdateAllController {
     }
 */
 
-    /**
-     * FLEX前端POST现场图片（待修改为facesearchTask表）
-     * @param request
-     * @return
-     * @throws IOException
-     */
-    @RequestMapping(value = "/demoFileUpload", method = RequestMethod.POST)
-    public Msg DemoUpdate(HttpServletRequest request) throws IOException {
 
-        InputStream in = request.getInputStream();
-        int formLength = request.getContentLength();
-
-        BigPerson testPerson = new BigPerson();
-        testPerson.setPersonId(10);
-        testPerson.setName("test");
-        testPerson.setHistory("test");
-        personService.istPersonPic(testPerson, in, formLength);
-
-        return new Msg(1, "the file formLength："+ formLength);
-    }
 }

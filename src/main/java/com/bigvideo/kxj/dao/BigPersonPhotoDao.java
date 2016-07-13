@@ -104,15 +104,17 @@ public class BigPersonPhotoDao {
      *
      * @param photoId
      */
-    public File queryPersonPic(final int photoId) throws FileNotFoundException {
+    public synchronized File queryPersonPic(final int photoId) throws FileNotFoundException {
         String sql = "SELECT PERSONPHOTO FROM BIGPERSONPHOTO WHERE PHOTOID= ?";
         final LobHandler lobHandler = new DefaultLobHandler();
 
         //读取Blob字段
         final File blackImg = new File(blankJpg);
+
         jdbcTemplate.query(sql, new Object[]{photoId}, new AbstractLobStreamingResultSetExtractor() {
             @Override
             protected void streamData(ResultSet rs) throws SQLException, IOException, DataAccessException {
+                //异步方法，需要同步代码块
                 FileCopyUtils.copy(lobHandler.getBlobAsBytes(rs, 1), blackImg);
             }
         });

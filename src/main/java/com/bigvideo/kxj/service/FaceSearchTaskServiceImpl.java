@@ -9,15 +9,14 @@ import java.io.InputStream;
 /**
  * Created by xiao on 2016/7/12.
  */
-@Service
-public class FaceSearchTaskImpl implements FaceSearchTask {
+@Service(value = "faceSearchTaskService")
+public class FaceSearchTaskServiceImpl implements FaceSearchTaskService {
 
     @Autowired
     FaceSearchTaskDao faceSearchTaskDao;
 
     @Override
-    public Boolean addTask(InputStream is, int isLength) {
-        faceSearchTaskDao.addTask(is, isLength);
-        return null;
+    public int addTask(InputStream is, int isLength) {
+        return faceSearchTaskDao.addTask(is, isLength);
     }
 }
