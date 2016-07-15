@@ -23,17 +23,24 @@ public class InterfaceController {
 
     /**
      * FLEX前端POST现场图片
+     *
      * @param request
      * @return
      * @throws IOException
      */
-    @RequestMapping(value = "/addTask", method = RequestMethod.POST)
-    public void addFaceCompareTask(HttpServletRequest request) throws IOException {
+    //ADDTask 改名为 compareTask
+    @RequestMapping(value = "/compareTask", method = RequestMethod.POST)
+    public Msg addFaceCompareTask(HttpServletRequest request) throws IOException {
 
         InputStream in = request.getInputStream();
         int formLength = request.getContentLength();
 
-        faceSearchTaskService.addTask(in, formLength);
+        //执行对比任务,获取SESSIONID
+        String sessionid = faceSearchTaskService.compareFace(in, formLength);
 
+        //获取对应最像的对比结果
+
+
+        return new Msg(1, "save success");
     }
 }

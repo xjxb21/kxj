@@ -8,9 +8,10 @@ import java.io.InputStream;
 public interface FaceSearchTaskService {
 
     /**
-     * 增加人脸对比任务数据，供C++程序调用
-     * @param is
-     * @param isLength
+     * 增加人脸对比任务数据，调用C++程序接口
+     * @param is    对比的图片输入流
+     * @param isLength  流的长度
+     * @return  对比接口返回的对比会话ID，会话ID为 FACESEARCHRESULT.SESSIONID
      */
-    public int addTask(InputStream is, int isLength);
+    public String compareFace(InputStream is, int isLength);
 }

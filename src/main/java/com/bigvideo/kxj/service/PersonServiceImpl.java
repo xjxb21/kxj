@@ -99,8 +99,9 @@ public class PersonServiceImpl implements PersonService {
         return null;
     }
 
+
     /**
-     * query科学家信息
+     * 查询所有科学家信息
      */
     @Override
     public List<BigPerson> queryPerson() {
@@ -111,9 +112,31 @@ public class PersonServiceImpl implements PersonService {
             int personId = ((BigDecimal)map.get("PERSONID")).intValue();
             String name = map.get("NAME").toString();
             String history = map.get("HISTORY").toString();
-
             bigPersonList.add(new BigPerson(personId, name, history));
         }
         return bigPersonList;
+    }
+
+    /**
+     * 根据ID查询单个科学家
+     *
+     * @param personId
+     * @return
+     */
+    @Override
+    public BigPerson queryPerson(int personId) {
+        return bigPersonDao.queryPerson(personId);
+    }
+
+    /**
+     * 分页查询
+     *
+     * @param pageNum  第几页
+     * @param pageSize 每页显示多少条
+     * @return
+     */
+    @Override
+    public List<BigPerson> queryPerson(int pageNum, int pageSize) {
+        return null;
     }
 }

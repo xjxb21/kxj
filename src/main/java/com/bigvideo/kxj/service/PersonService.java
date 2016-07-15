@@ -61,8 +61,24 @@ public interface PersonService {
     public File getPersonPic(int photoId);
 
     /**
-     * 查询科学家信息
+     * 根据ID查询单个科学家
+     * @param personId
+     * @return
+     */
+    public BigPerson queryPerson(int personId);
+
+    /**
+     * 查询所有科学家信息
      */
     public List<BigPerson> queryPerson();
+
+
+    /**
+     * 分页查询
+     * @param pageNum   第几页
+     * @param pageSize  每页显示多少条
+     * @return
+     */
+    public List<BigPerson> queryPerson(int pageNum, int pageSize);
 
 }

@@ -31,7 +31,7 @@ public class BigPersonPhotoDao {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    private LobHandler lobHandler = new DefaultLobHandler();
+    private final LobHandler lobHandler = new DefaultLobHandler();
 
     /**
      * 更新科学家图片
@@ -41,7 +41,6 @@ public class BigPersonPhotoDao {
     public void updatePersonPic(final int photoId, final InputStream is, final int isLength) {
 
         String sql = "UPDATE BIGPERSONPHOTO SET PERSONPHOTO = ? WHERE PHOTOID= ?";
-        //LobHandler lobHandler = new DefaultLobHandler();
         jdbcTemplate.execute(sql, new AbstractLobCreatingPreparedStatementCallback(lobHandler) {
             @Override
             protected void setValues(PreparedStatement ps, LobCreator lobCreator) throws SQLException, DataAccessException {
@@ -89,7 +88,6 @@ public class BigPersonPhotoDao {
     public void istPersonPic(final int photoId, final InputStream is, final int isLength) {
         String sql = "INSERT INTO BIGPERSONPHOTO (PHOTOID, PERSONPHOTO) VALUES (?,?)";
         //LobHandler lobHandler = new OracleLobHandler();   //如果为ORACLE 10G 请注意使用不同的版本驱动包
-        //LobHandler lobHandler = new DefaultLobHandler();
         jdbcTemplate.execute(sql, new AbstractLobCreatingPreparedStatementCallback(lobHandler) {
             @Override
             protected void setValues(PreparedStatement ps, LobCreator lobCreator) throws SQLException, DataAccessException {
@@ -106,19 +104,17 @@ public class BigPersonPhotoDao {
      */
     public synchronized File queryPersonPic(final int photoId) throws FileNotFoundException {
         String sql = "SELECT PERSONPHOTO FROM BIGPERSONPHOTO WHERE PHOTOID= ?";
-        final LobHandler lobHandler = new DefaultLobHandler();
 
-        //读取Blob字段
-        final File blackImg = new File(blankJpg);
+        final File tmpFile = new File(blankJpg);
 
         jdbcTemplate.query(sql, new Object[]{photoId}, new AbstractLobStreamingResultSetExtractor() {
             @Override
             protected void streamData(ResultSet rs) throws SQLException, IOException, DataAccessException {
                 //异步方法，需要同步代码块
-                FileCopyUtils.copy(lobHandler.getBlobAsBytes(rs, 1), blackImg);
+                FileCopyUtils.copy(lobHandler.getBlobAsBytes(rs, 1), tmpFile);
             }
         });
-
-        return blackImg;
+        return tmpFile;
     }
+
 }

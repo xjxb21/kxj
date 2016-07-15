@@ -3,10 +3,7 @@ package com.bigvideo.kxj.controller;
 import com.bigvideo.kxj.entity.BigPerson;
 import com.bigvideo.kxj.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
@@ -25,12 +22,26 @@ public class AppController {
 
     /**
      * 查询所有的科学家信息
+     * @param start
+     * @param end
      * @return
      */
     @RequestMapping(value = "getAllPerson", method = RequestMethod.GET)
-    public List<BigPerson> queryAllPerson(){
+    public List<BigPerson> queryAllPerson(@RequestParam(name = "start", required = false) Integer start,
+                                          @RequestParam(name = "end", required = false) Integer end) {
+
         List list = personService.queryPerson();
         return list;
+    }
+
+    /**
+     * 查询单个科学家信息, 没有信息或错误，返回NULL
+     * @return
+     */
+    @RequestMapping(value = "getPerson/{id}", method = RequestMethod.GET)
+    public BigPerson queryPerson(@PathVariable("id") int id){
+        BigPerson person =  personService.queryPerson(id);
+        return person;
     }
 
     /**
@@ -46,13 +57,14 @@ public class AppController {
 
     /**
      * 获取科学家图片
-     * @param id    人员ID
+     *
+     * @param id       人员ID
      * @param response
      * @throws IOException
      */
     @RequestMapping(value = "getPic/{id}", method = RequestMethod.GET)
     public void getPic(@PathVariable("id") int id, HttpServletResponse response) throws IOException {
-
+        System.out.printf(this.toString());
         File tarFile = personService.getPersonPic(id);
 
         InputStream in = new FileInputStream(tarFile);

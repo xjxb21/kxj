@@ -4,9 +4,11 @@ import com.bigvideo.kxj.entity.BigPerson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementSetter;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -72,5 +74,30 @@ public class BigPersonDao {
         String sql = "SELECT PERSONID, NAME, HISTORY FROM BIGPERSON";
         List<Map<String, Object>> mapList = jdbcTemplate.queryForList(sql);
         return mapList;
+    }
+
+    /**
+     * 根据ID 获取科学家信息
+     */
+    public BigPerson queryPerson(int personId) {
+
+        String sql = "SELECT PERSONID, NAME, HISTORY FROM BIGPERSON WHERE PERSONID=?";
+        try {
+            BigPerson person = jdbcTemplate.queryForObject(sql, new Object[]{new Integer(personId)}, new RowMapper<BigPerson>() {
+                @Override
+                public BigPerson mapRow(ResultSet rs, int rowNum) throws SQLException {
+                    BigPerson ret = new BigPerson();
+                    ret.setPersonId(rs.getInt("PERSONID"));
+                    ret.setName(rs.getString("NAME"));
+                    ret.setHistory(rs.getString("HISTORY"));
+                    return ret;
+                }
+            });
+            return person;
+        } catch (Exception e) {
+            //结果集小于0 或 大于1 会Spring会抛出异常
+            System.out.println(e.getMessage());
+        }
+        return null;
     }
 }
