@@ -22,13 +22,13 @@ public class SysController {
      * @return
      */
     @RequestMapping(value = "updateAll")
-    public Msg updateAll() {
+    public OperMessage updateAll() {
         try {
             maintain.updateAllPerson();
         } catch (Exception e) {
             e.printStackTrace();
-            return new Msg(0, "Update all excel info fail!");
+            return new OperMessage("FAILED", "Update all excel info FAILED!", null);
         }
-        return new Msg(1, "Update all excel info Success!");
+        return new OperMessage("SUCCESS", "Update all excel info SUCCESS!", null);
     }
 }

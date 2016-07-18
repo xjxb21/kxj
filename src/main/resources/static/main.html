@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <!-- The jQuery library is a prerequisite for all jqSuite products -->
+    <script type="text/ecmascript" src="js/jquery.min.js"></script>
+    <!-- We support more than 40 localizations -->
+    <script type="text/ecmascript" src="jqgrid/js/i18n/grid.locale-cn.js"></script>
+    <!-- This is the Javascript file of jqGrid -->
+    <!--<script type="text/ecmascript" src="jqgrid/js/jquery.jqGrid.min.js"></script>-->
+    <script type="text/ecmascript" src="jqgrid/js/jquery.jqGrid.js"></script>
+    <!-- A link to a Boostrap  and jqGrid Bootstrap CSS siles-->
+    <link rel="stylesheet" type="text/css" media="screen" href="css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="jqgrid/css/ui.jqgrid-bootstrap.css"/>
+
+    <script type="text/ecmascript" src="js/ajaxfileupload.js"></script>
+    <script>
+        $.jgrid.defaults.width = 780;
+        $.jgrid.defaults.responsive = true;
+        $.jgrid.defaults.styleUI = 'Bootstrap';
+    </script>
+    <meta charset="utf-8"/>
+    <title>jqGrid Loading Data - Million Rows from a REST service</title>
+</head>
+<body>
+<div id="container">
+    <div id="header">
+        <div style="top:10px; font-size:36px; font-weight:bold; position:absolute; margin-left:24px; color:#fff;">
+            科学家管理后台123
+        </div>
+    </div>
+    <div id="content">
+        <div style="width:100%;height:90%;">
+            <div style="border:#0ff 1 solid; margin-left:2%; margin-right:2%; margin-top:20px; margin-bottom:10px;">
+                <div style="width:100%;">
+                    <div style="float:left; margin-left:12px;">
+                        <button id="queryBtn" class="sexyButton" style="width:80px; height:25px;background-color:#0f0;"
+                                onClick="search('<%=basePath%>historyData.jsp')">批量导入
+                        </button>
+                        &nbsp;&nbsp;
+                        <button id="queryBtn" class="sexyButton" style="width:80px; height:25px;background-color:#0f0;"
+                                onClick="search('<%=basePath%>historyData.jsp')">全部删除
+                        </button>
+                    </div>
+                    <div style="text-align:right; font-size:14px;margin-top:12px; font-family:'微软雅黑','宋体', Arial;">
+                        科学家名称：&nbsp;<input id="dateInput1" value="" class="Wdate" type="text"
+                                           onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" style="width:140px">
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <button id="queryBtn" class="sexyButton" style="width:60px; height:25px;background-color:#0f0;"
+                                onClick="search('<%=basePath%>historyData.jsp')">查询
+                        </button>
+                    </div>
+                </div>
+
+                <div style="margin-left:12px;margin-right:20px;margin-top:20px">
+                    <table id="jqGrid"></table>
+                    <div id="jqGridPager"></div>
+                    <br/>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+<script type="text/javascript">
+    //    $(document).ready(function () {
+    //        $("#jqGrid").jqGrid({
+    //            url: 'http://trirand.com/blog/phpjqgrid/examples/jsonp/getjsonp.php?callback=?&qwery=longorders',
+    //            mtype: "GET",
+    //            datatype: "jsonp",
+    //            colModel: [
+    //                {label: 'OrderID', name: 'OrderID', key: true, width: 75},
+    //                {label: 'Customer ID', name: 'CustomerID', width: 150},
+    //                {label: 'Order Date', name: 'OrderDate', width: 150},
+    //                {label: 'Freight', name: 'Freight', width: 150},
+    //                {label: 'Ship Name', name: 'ShipName', width: 150}
+    //            ],
+    //            viewrecords: true,
+    //            width: 780,
+    //            height: 250,
+    //            rowNum: 20,
+    //            pager: "#jqGridPager"
+    //        });
+    //    });
+
+    $(document).ready(function () {
+        $("#jqGrid").jqGrid({
+            //url: 'data2.json',
+            url: '/app/getAllPerson',
+            // we set the changes to be made at client side using predefined word clientArray
+            //editurl: 'clientArray',
+            editurl: '/app/doPerson',
+            datatype: "json",
+            colModel: [
+                {
+                    label: '科学家ID',
+                    name: 'personId',
+                    width: 75,
+                    key: true,
+                    editable: true,
+                    editrules: {required: false}
+                },
+                {
+                    label: '科学家名字',
+                    name: 'name',
+                    width: 140,
+                    editable: true // must set editable to true if you want to make the field editable
+                },
+                {
+                    label: '介绍描述',
+                    name: 'history',
+                    width: 320,
+                    editable: true,
+                    edittype: 'textarea'
+                },
+                /*{
+                 label: '科学家照片',
+                 name: 'personPic',
+                 width: 320,
+                 editable: true,
+                 edittype: 'file'
+                 }*/
+                {
+                    name: 'imgUpload',
+                    index: 'customer_id',
+                    align: 'left',
+                    editable: true,
+                    edittype: 'file',
+                    editoptions: {
+                        enctype: "multipart/form-data"
+                    },
+                    width: 210,
+                    align: 'cenrte',
+                    //formatter: jgImageFormatter,
+                    search: false
+                }
+            ],
+            sortname: 'personId',
+            sortorder: 'asc',
+            loadonce: true,
+            viewrecords: true,
+            height: 420,
+            rowNum: 11,
+            pager: "#jqGridPager"
+        });
+
+        $('#jqGrid').navGrid('#jqGridPager',
+                // the buttons to appear on the toolbar of the grid
+                {
+                    edit: true,
+                    add: true,
+                    del: true,
+                    search: true,
+                    refresh: true,
+                    view: true,
+                    position: "left",
+                    cloneToTop: false
+                },
+                // options for the Edit Dialog
+                {
+                    editCaption: "The Edit Dialog",
+                    recreateForm: true,
+                    checkOnUpdate: true,
+                    checkOnSubmit: true,
+                    closeAfterEdit: true,
+                    errorTextFormat: function (data) {
+                        return 'Error: ' + data.responseText
+                    }
+                },
+                // options for the Add Dialog
+                {
+                    closeAfterAdd: true,
+                    recreateForm: true,
+                    errorTextFormat: function (data) {
+                        return 'Error: ' + data.responseText
+                    },
+                    //上传图片
+                    afterSubmit: UploadImage
+                },
+                // options for the Delete Dailog
+                {
+                    errorTextFormat: function (data) {
+                        return 'Error: ' + data.responseText
+                    }
+                });
+    });
+
+    function getSelectedRow() {
+        var grid = $("#jqGrid");
+        var rowKey = grid.jqGrid('getGridParam', "selrow");
+
+        if (rowKey)
+            alert("Selected row primary key is: " + rowKey);
+        else
+            alert("No rows are selected");
+    }
+
+    function selectRow() {
+        jQuery('#jqGrid').jqGrid('setSelection', 'BONAP');
+    }
+
+    /***********************图片异步提交*****************************/
+    //提交后上传图片
+    function UploadImage(response, postdata) {
+        var data = $.parseJSON(response.responseText);
+        if (data.status == "SUCCESS") {
+            if ($("#fileToUpload").val() != "") {
+                ajaxFileUpload(data.pid);
+            }
+        }
+        return [data.status, data.message, data.pid];
+    }
+
+    //提交图片, id为将要插入的photoId
+    function ajaxFileUpload(id) {
+        $.ajaxFileUpload
+        (
+                {
+                    url: '/app/addPersonPic',
+                    secureuri: false,
+                    fileElementId: 'imgUpload',
+                    dataType: 'json',
+                    data: {pid: id},
+                    success: function (data, status) {
+                        if (typeof (data.success) != 'undefined') {
+                            if (data.success == true) {
+                                return;
+                            } else {
+                                alert(data.message);
+                            }
+                        }
+                        else {
+                            return alert('Failed to upload logo!');
+                        }
+                    },
+                    error: function (data, status, e) {
+                        alert(data);
+                        alert(status);
+                        alert(e);
+                        return alert('未知错误');
+                    }
+                }
+        )
+    }
+    /*******************图片异步提交【end】*************************/
+</script>
+
+</html>

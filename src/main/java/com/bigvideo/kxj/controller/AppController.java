@@ -2,8 +2,10 @@ package com.bigvideo.kxj.controller;
 
 import com.bigvideo.kxj.entity.BigPerson;
 import com.bigvideo.kxj.service.PersonService;
+import org.apache.commons.logging.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
@@ -11,7 +13,7 @@ import java.util.List;
 
 /**
  * Created by xiao on 2016/7/6.
- * 应用功能
+ * WEB应用功能
  */
 @RestController
 @RequestMapping(value = "app")
@@ -21,26 +23,28 @@ public class AppController {
     PersonService personService;
 
     /**
-     * 查询所有的科学家信息
-     * @param start
-     * @param end
+     * 查询所有的科学家信息，如果缺少任何一个参数，则搜索所有
+     *
+     * @param pageSize 每页显示多少条
+     * @param pageNum  第几页
      * @return
      */
     @RequestMapping(value = "getAllPerson", method = RequestMethod.GET)
-    public List<BigPerson> queryAllPerson(@RequestParam(name = "start", required = false) Integer start,
-                                          @RequestParam(name = "end", required = false) Integer end) {
-
-        List list = personService.queryPerson();
-        return list;
+    public List<BigPerson> queryAllPerson(@RequestParam(name = "pageSize", required = false) Integer pageSize,
+                                          @RequestParam(name = "pageNum", required = false) Integer pageNum) {
+        //跨域访问
+        //httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
+        return personService.queryPerson(pageNum, pageSize);
     }
 
     /**
      * 查询单个科学家信息, 没有信息或错误，返回NULL
+     *
      * @return
      */
     @RequestMapping(value = "getPerson/{id}", method = RequestMethod.GET)
-    public BigPerson queryPerson(@PathVariable("id") int id){
-        BigPerson person =  personService.queryPerson(id);
+    public BigPerson queryPerson(@PathVariable("id") int id) {
+        BigPerson person = personService.queryPerson(id);
         return person;
     }
 
@@ -80,34 +84,62 @@ public class AppController {
         outputStream.close();
     }
 
-    /**************DEMO****************/
-    /*
-    @RequestMapping(value = "/demoFileUpload3", method = RequestMethod.POST)
-    public Msg DemoUpdate(@RequestParam("name") String name, @RequestParam(value = "file", required = false) MultipartFile file) {
+    /*public BigPerson getBigperson(@ModelAttribute(value = "personId") Integer personId){
+        if (personId != null) {
+            System.out.println("modeAttribute bigperson..."+personId);
+        }
+        return new BigPerson(2, "xiao", "xiao 's hisgory!!");
+    }*/
 
 
+    /**
+     * 处理jqgrid的数据操作
+     * @param oper
+     * @param bigPerson
+     * @return
+     */
+    @RequestMapping(value = "doPerson")
+    public OperMessage addPerson(@RequestParam(name = "oper") String oper,
+                          BigPerson bigPerson, @RequestParam(name = "id", required = false) Integer delId) {
+        System.out.println("oper is:" + oper);
+        System.out.println(bigPerson.toString());
+
+        switch (oper) {
+            case "add":
+                BigPerson addPerson = new BigPerson(null, bigPerson.getName(), bigPerson.getHistory());
+                int pid = personService.addPerson(addPerson);
+                return new OperMessage("SUCCESS", "SAVE PERSON INFO SUCCESS", pid);
+            case "edit":
+                if (bigPerson.getPersonId() != null) {
+                    personService.updatePerson(bigPerson);
+                }else{
+                   return new OperMessage("FAILED", "EDIT PERSON INFO SUCCESS", bigPerson.getPersonId());
+                }
+            case "del":
+                personService.delPerson(new BigPerson(delId, null, null));
+        }
+
+        return null;
+    }
+
+    /**
+     * Post HTML FILE 类型 ，插入图片
+     * @param pid   对应人员的的personId
+     * @param file  人员照片
+     * @return
+     */
+    @RequestMapping(value = "addPersonPic", method = RequestMethod.POST)
+    public OperMessage addPersonPic(@RequestParam(name = "pid") int pid,
+                             @RequestParam(value = "imgUpload") MultipartFile file){
         if (!file.isEmpty()) {
             try {
-                byte[] bytes = file.getBytes();
-                BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(new File(name + "-uploaded")));
-                stream.write(bytes);
-                stream.close();
-                return new Msg(1, "Upload Success! name is:" + name + ", file size:"+file.getSize());
-            } catch (Exception e) {
-                return new Msg(0, "Upload fail!" + e.getMessage());
+                InputStream inFile = file.getInputStream();
+                personService.istPersonPic(new BigPerson(pid, null, null), inFile, new Long(file.getSize()).intValue());
+            } catch (IOException e) {
+                e.printStackTrace();
+                return new OperMessage("FAILED", "SAVE PERSON'S IMG FILE FAILED", pid);
             }
-        } else {
-            return new Msg(0, "Upload File is empty! name is:" + name);
         }
+        return new OperMessage("SUCCESS", "SAVE PERSON'S IMG FILE SUCCESS", pid);
     }
-
-    @RequestMapping(value = "/demoFileUpload2", method = RequestMethod.POST)
-    public Msg DemoUpdate(@RequestParam("name") String name) {
-
-        System.out.println("Upload File is empty! name is:" + name);
-        return new Msg(1, "Upload Success! name is:" + name );
-    }
-*/
-
-
 }

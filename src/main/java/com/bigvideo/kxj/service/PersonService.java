@@ -14,8 +14,10 @@ public interface PersonService {
     /**
      * 添加科学家人员
      * @param person
+     * @return 记录主键ID
      */
-    public void addPerson(BigPerson person);
+    //public int addPerson(BigPerson person, InputStream inPic, int inPicLength);
+    public int addPerson(BigPerson person);
 
     /**
      * 删除科学家
@@ -67,18 +69,13 @@ public interface PersonService {
      */
     public BigPerson queryPerson(int personId);
 
-    /**
-     * 查询所有科学家信息
-     */
-    public List<BigPerson> queryPerson();
-
 
     /**
-     * 分页查询
+     * 查询所有科学家信息【支持分页查询】，pageNum 或 pageSize 为空，那么则搜索全部
      * @param pageNum   第几页
      * @param pageSize  每页显示多少条
      * @return
      */
-    public List<BigPerson> queryPerson(int pageNum, int pageSize);
+    public List<BigPerson> queryPerson(Integer pageNum, Integer pageSize);
 
 }

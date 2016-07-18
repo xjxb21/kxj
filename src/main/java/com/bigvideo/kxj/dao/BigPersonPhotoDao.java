@@ -71,7 +71,7 @@ public class BigPersonPhotoDao {
      * @param photoId
      */
     public void delPersonPic(final int photoId) {
-        String sql = "DELETE * FROM BIGPERSONPHOTO WHERE PHOTOID=?";
+        String sql = "DELETE FROM BIGPERSONPHOTO WHERE PHOTOID=?";
         jdbcTemplate.update(sql, new PreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps) throws SQLException {

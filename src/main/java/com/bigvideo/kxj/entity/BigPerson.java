@@ -42,4 +42,13 @@ public class BigPerson {
     public void setHistory(String history) {
         this.history = history;
     }
+
+    @Override
+    public String toString() {
+        return "BigPerson{" +
+                "personId=" + personId +
+                ", name='" + name + '\'' +
+                ", history='" + history + '\'' +
+                '}';
+    }
 }

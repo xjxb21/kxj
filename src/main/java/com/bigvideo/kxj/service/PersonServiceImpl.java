@@ -5,6 +5,7 @@ import com.bigvideo.kxj.dao.BigPersonPhotoDao;
 import com.bigvideo.kxj.entity.BigPerson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -30,16 +31,19 @@ public class PersonServiceImpl implements PersonService {
      * add科学家人员信息
      */
     @Override
-    public void addPerson(BigPerson person) {
-        bigPersonDao.istPerson(person);
+    public int addPerson(BigPerson person) {
+        int key = bigPersonDao.istPerson(person);
+        return key;
     }
 
     /**
      * delete科学家
      */
     @Override
+    @Transactional
     public void delPerson(BigPerson person) {
         bigPersonDao.delPerson(person);
+        bigPersonPhotoDao.delPersonPic(person.getPersonId());
     }
 
     /**
@@ -99,24 +103,6 @@ public class PersonServiceImpl implements PersonService {
         return null;
     }
 
-
-    /**
-     * 查询所有科学家信息
-     */
-    @Override
-    public List<BigPerson> queryPerson() {
-        List<Map<String, Object>> maplist = bigPersonDao.queryAllPerson();
-        List<BigPerson> bigPersonList = new ArrayList();
-        for (int i=0; i<maplist.size(); i++) {
-            Map<String, Object> map = maplist.get(i);
-            int personId = ((BigDecimal)map.get("PERSONID")).intValue();
-            String name = map.get("NAME").toString();
-            String history = map.get("HISTORY").toString();
-            bigPersonList.add(new BigPerson(personId, name, history));
-        }
-        return bigPersonList;
-    }
-
     /**
      * 根据ID查询单个科学家
      *
@@ -129,14 +115,24 @@ public class PersonServiceImpl implements PersonService {
     }
 
     /**
-     * 分页查询
+     * 分页查询 查询所有科学家信息
      *
      * @param pageNum  第几页
      * @param pageSize 每页显示多少条
      * @return
      */
     @Override
-    public List<BigPerson> queryPerson(int pageNum, int pageSize) {
-        return null;
+    public List<BigPerson> queryPerson(Integer pageNum, Integer pageSize) {
+        List<Map<String, Object>> mapList = bigPersonDao.queryAllPerson(pageNum, pageSize);
+        List<BigPerson> bigPersonList = new ArrayList();
+        for(int i=0; i<mapList.size(); i++) {
+            Map<String, Object> map = mapList.get(i);
+            int personId = ((BigDecimal)map.get("PERSONID")).intValue();
+            String name = map.get("NAME").toString();
+            String history = map.get("HISTORY").toString();
+            bigPersonList.add(new BigPerson(personId, name, history));
+        }
+        return bigPersonList;
     }
+
 }
