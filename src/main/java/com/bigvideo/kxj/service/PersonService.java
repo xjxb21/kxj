@@ -1,10 +1,10 @@
 package com.bigvideo.kxj.service;
 
+import com.bigvideo.kxj.dao.support.PageInfo;
 import com.bigvideo.kxj.entity.BigPerson;
 
 import java.io.File;
 import java.io.InputStream;
-import java.util.List;
 
 /**
  * Created by xiao on 2016/7/10.
@@ -69,13 +69,11 @@ public interface PersonService {
      */
     public BigPerson queryPerson(int personId);
 
-
     /**
      * 查询所有科学家信息【支持分页查询】，pageNum 或 pageSize 为空，那么则搜索全部
      * @param pageNum   第几页
      * @param pageSize  每页显示多少条
      * @return
      */
-    public List<BigPerson> queryPerson(Integer pageNum, Integer pageSize);
-
+    public PageInfo queryPerson(Integer pageNum, Integer pageSize);
 }

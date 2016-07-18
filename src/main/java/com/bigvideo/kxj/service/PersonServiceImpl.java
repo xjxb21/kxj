@@ -2,6 +2,7 @@ package com.bigvideo.kxj.service;
 
 import com.bigvideo.kxj.dao.BigPersonDao;
 import com.bigvideo.kxj.dao.BigPersonPhotoDao;
+import com.bigvideo.kxj.dao.support.PageInfo;
 import com.bigvideo.kxj.entity.BigPerson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,10 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 科学家信息维护
@@ -122,17 +119,8 @@ public class PersonServiceImpl implements PersonService {
      * @return
      */
     @Override
-    public List<BigPerson> queryPerson(Integer pageNum, Integer pageSize) {
-        List<Map<String, Object>> mapList = bigPersonDao.queryAllPerson(pageNum, pageSize);
-        List<BigPerson> bigPersonList = new ArrayList();
-        for(int i=0; i<mapList.size(); i++) {
-            Map<String, Object> map = mapList.get(i);
-            int personId = ((BigDecimal)map.get("PERSONID")).intValue();
-            String name = map.get("NAME").toString();
-            String history = map.get("HISTORY").toString();
-            bigPersonList.add(new BigPerson(personId, name, history));
-        }
-        return bigPersonList;
+    public PageInfo queryPerson(Integer pageNum, Integer pageSize) {
+        PageInfo pageInfo = bigPersonDao.queryAllPerson(pageNum, pageSize);
+        return pageInfo;
     }
-
 }

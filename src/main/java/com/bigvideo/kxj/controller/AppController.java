@@ -1,5 +1,6 @@
 package com.bigvideo.kxj.controller;
 
+import com.bigvideo.kxj.dao.support.PageInfo;
 import com.bigvideo.kxj.entity.BigPerson;
 import com.bigvideo.kxj.service.PersonService;
 import org.apache.commons.logging.Log;
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.List;
@@ -29,17 +31,37 @@ public class AppController {
      * @param pageNum  第几页
      * @return
      */
-    @RequestMapping(value = "getAllPerson", method = RequestMethod.GET)
+    /*@RequestMapping(value = "getAllPerson", method = RequestMethod.GET)
     public List<BigPerson> queryAllPerson(@RequestParam(name = "pageSize", required = false) Integer pageSize,
                                           @RequestParam(name = "pageNum", required = false) Integer pageNum) {
+        //跨域访问
+        //httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
+        return personService.queryPerson(pageNum, pageSize);
+    }*/
+    @RequestMapping(value = "getAllPerson", method = RequestMethod.GET)
+    public PageInfo queryAllPerson(@RequestParam(name = "pageSize", required = false) Integer pageSize,
+                                   @RequestParam(name = "pageNum", required = false) Integer pageNum) {
         //跨域访问
         //httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
         return personService.queryPerson(pageNum, pageSize);
     }
 
     /**
+     * 搜索科学家信息
+     * @param bigPerson
+     * @return
+     */
+    @RequestMapping(value = "searchPerson")
+    public PageInfo searchPerson(BigPerson bigPerson) {
+        System.out.println(bigPerson.toString());
+
+        return null;
+    }
+
+    /**
      * 查询单个科学家信息, 没有信息或错误，返回NULL
      *
+     * @param id
      * @return
      */
     @RequestMapping(value = "getPerson/{id}", method = RequestMethod.GET)
@@ -57,7 +79,6 @@ public class AppController {
      */
     @RequestMapping(value = "getPic/{id}", method = RequestMethod.GET)
     public void getPic(@PathVariable("id") int id, HttpServletResponse response) throws IOException {
-        System.out.printf(this.toString());
         File tarFile = personService.getPersonPic(id);
 
         InputStream in = new FileInputStream(tarFile);
@@ -83,13 +104,14 @@ public class AppController {
 
     /**
      * 处理jqgrid的数据操作
-     * @param oper
+     *
+     * @param oper      {add | edit | del}
      * @param bigPerson
      * @return
      */
     @RequestMapping(value = "doPerson")
     public OperMessage addPerson(@RequestParam(name = "oper") String oper,
-                          BigPerson bigPerson, @RequestParam(name = "id", required = false) Integer delId) {
+                                 BigPerson bigPerson) {
         System.out.println("oper is:" + oper);
         System.out.println(bigPerson.toString());
 
@@ -103,26 +125,27 @@ public class AppController {
                     //更新单独的科学家信息(不包含图片)
                     personService.updatePerson(bigPerson);
                     return new OperMessage("SUCCESS", "EDIT PERSON INFO SUCCESS", bigPerson.getPersonId());
-                }else{
-                   return new OperMessage("FAILED", "EDIT PERSON INFO FAILED", bigPerson.getPersonId());
+                } else {
+                    return new OperMessage("FAILED", "EDIT PERSON INFO FAILED", bigPerson.getPersonId());
                 }
             case "del":
-                personService.delPerson(new BigPerson(delId, null, null));
-                return new OperMessage("FAILED", "EDIT PERSON INFO SUCCESS", bigPerson.getPersonId());
+                personService.delPerson(new BigPerson(bigPerson.getPersonId(), null, null));
+                return new OperMessage("SUCCESS", "DELETE PERSON INFO SUCCESS", bigPerson.getPersonId());
         }
 
         return new OperMessage("FAILED", "NOT SURPORT OPERATION", null);
     }
 
     /**
-     * Post HTML FILE 类型 ，插入图片
-     * @param pid   对应人员的的personId
-     * @param file  人员照片
+     * HTML Post FILE 类型 ，插入图片
+     *
+     * @param pid  对应人员的的personId
+     * @param file 人员照片
      * @return
      */
-    @RequestMapping(value = "addPersonPic", method = RequestMethod.POST)
+    @RequestMapping(value = "addPersonPic4File", method = RequestMethod.POST)
     public OperMessage addPersonPic(@RequestParam(name = "pid") int pid,
-                             @RequestParam(value = "imgUpload") MultipartFile file){
+                                    @RequestParam(value = "imgUpload") MultipartFile file) {
         if (!file.isEmpty()) {
             try {
                 InputStream inFile = file.getInputStream();
@@ -133,6 +156,31 @@ public class AppController {
             }
         }
         return new OperMessage("SUCCESS", "SAVE PERSON'S IMG FILE SUCCESS", pid);
+    }
+
+    /**
+     * 前端 POST 上传图片二进制
+     *
+     * @param request
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = "/addPersonPic4Binary", method = RequestMethod.POST)
+    public OperMessage addFaceCompareTask(HttpServletRequest request, BigPerson bigPerson) {
+
+        try {
+            InputStream in;
+            in = request.getInputStream();
+            int formLength = request.getContentLength();
+
+            personService.istPersonPic(bigPerson, in, formLength);
+            return new OperMessage("SUCCESS", "INSERT PERSON'S IMG FILE SUCCESS", null);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return new OperMessage("FAILED", "INSERT PERSON'S IMG FILE FAILED:", null);
     }
 
 }

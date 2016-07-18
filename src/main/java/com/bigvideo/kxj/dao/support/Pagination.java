@@ -56,7 +56,7 @@ public class Pagination extends JdbcDaoSupport {
         setCurrentPage(currentPage);
         System.out.println("Pagination currentPage=" + currentPage);
         // 计算总记录数
-        StringBuffer totalSQL = new StringBuffer(" SELECT count(*) FROM ( ");
+        StringBuffer totalSQL = new StringBuffer(" SELECT count(1) FROM ( ");
         totalSQL.append(sql);
         totalSQL.append(" ) totalTable ");
         // 给JdbcTemplate赋值

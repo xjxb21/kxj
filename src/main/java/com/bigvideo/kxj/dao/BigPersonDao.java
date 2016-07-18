@@ -1,5 +1,6 @@
 package com.bigvideo.kxj.dao;
 
+import com.bigvideo.kxj.dao.support.PageInfo;
 import com.bigvideo.kxj.dao.support.Pagination;
 import com.bigvideo.kxj.entity.BigPerson;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,7 +83,7 @@ public class BigPersonDao {
      * @param pageSize
      * @return
      */
-    public List<Map<String, Object>> queryAllPerson(Integer curPage, Integer pageSize) {
+    /*public List<Map<String, Object>> queryAllPerson(Integer curPage, Integer pageSize) {
 
         String sql = "SELECT PERSONID, NAME, HISTORY FROM BIGPERSON";
         if (curPage == null || pageSize == null) {
@@ -92,6 +93,21 @@ public class BigPersonDao {
             Pagination pagination = new Pagination(curPage, pageSize, sql, jdbcTemplate);
             return pagination.getResultList();
         }
+    }*/
+
+    public PageInfo queryAllPerson(Integer curPage, Integer pageSize) {
+
+        PageInfo pageInfo = new PageInfo();
+        String sql = "SELECT PERSONID, NAME, HISTORY FROM BIGPERSON";
+        if (curPage == null || pageSize == null) {
+            List<Map<String, Object>> mapList = jdbcTemplate.queryForList(sql);
+            pageInfo.setListInfo(mapList);
+        } else {
+            Pagination pagination = new Pagination(curPage, pageSize, sql, jdbcTemplate);
+            pageInfo.setTotalRows(pagination.getTotalRows());
+            pageInfo.setListInfo(pagination.getResultList());
+        }
+        return pageInfo;
     }
 
     /**
