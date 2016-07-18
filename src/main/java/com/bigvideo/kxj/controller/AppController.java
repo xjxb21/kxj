@@ -49,17 +49,6 @@ public class AppController {
     }
 
     /**
-     * 更新单独的科学家信息(不包含图片?)
-     *
-     * @return
-     */
-    @RequestMapping(value = "updatePerson", method = RequestMethod.POST)
-    public Msg updateSingle() {
-        //personService.updatePerson();
-        return null;
-    }
-
-    /**
      * 获取科学家图片
      *
      * @param id       人员ID
@@ -111,15 +100,18 @@ public class AppController {
                 return new OperMessage("SUCCESS", "SAVE PERSON INFO SUCCESS", pid);
             case "edit":
                 if (bigPerson.getPersonId() != null) {
+                    //更新单独的科学家信息(不包含图片)
                     personService.updatePerson(bigPerson);
+                    return new OperMessage("SUCCESS", "EDIT PERSON INFO SUCCESS", bigPerson.getPersonId());
                 }else{
-                   return new OperMessage("FAILED", "EDIT PERSON INFO SUCCESS", bigPerson.getPersonId());
+                   return new OperMessage("FAILED", "EDIT PERSON INFO FAILED", bigPerson.getPersonId());
                 }
             case "del":
                 personService.delPerson(new BigPerson(delId, null, null));
+                return new OperMessage("FAILED", "EDIT PERSON INFO SUCCESS", bigPerson.getPersonId());
         }
 
-        return null;
+        return new OperMessage("FAILED", "NOT SURPORT OPERATION", null);
     }
 
     /**
@@ -142,4 +134,5 @@ public class AppController {
         }
         return new OperMessage("SUCCESS", "SAVE PERSON'S IMG FILE SUCCESS", pid);
     }
+
 }
