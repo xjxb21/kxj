@@ -7,7 +7,7 @@ import static org.junit.Assert.*;
 /**
  * Created by xiao on 2016/7/8.
  */
-public class PersonServiceTest {
+public class IPersonServiceTest {
     @Test
     public void updateAllPerson() throws Exception {
 

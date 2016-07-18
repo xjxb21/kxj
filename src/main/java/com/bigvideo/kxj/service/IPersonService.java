@@ -9,7 +9,7 @@ import java.io.InputStream;
 /**
  * Created by xiao on 2016/7/10.
  */
-public interface PersonService {
+public interface IPersonService {
 
     /**
      * 添加科学家人员
@@ -17,22 +17,22 @@ public interface PersonService {
      * @return 记录主键ID
      */
     //public int addPerson(BigPerson person, InputStream inPic, int inPicLength);
-    public int addPerson(BigPerson person);
+    int addPerson(BigPerson person);
 
     /**
      * 删除科学家
      */
-    public void delPerson(BigPerson person);
+    void delPerson(BigPerson person);
 
     /**
      * 更新科学家
      */
-    public void updatePerson(BigPerson person);
+    void updatePerson(BigPerson person);
 
     /**
      * 更新科学家个人照片
      */
-    public void updatePersonPic(BigPerson person, InputStream in, int inLength) ;
+    void updatePersonPic(BigPerson person, InputStream in, int inLength) ;
 
     /**
      * 添加科学家照片
@@ -41,7 +41,7 @@ public interface PersonService {
      * @param in       图片流
      * @param inLength 文件长度
      */
-    public void istPersonPic(BigPerson person, InputStream in, int inLength) ;
+    void istPersonPic(BigPerson person, InputStream in, int inLength) ;
 
 
     /**
@@ -49,31 +49,32 @@ public interface PersonService {
      *
      * @param person
      * @return
-     * @see PersonService#getPersonPic(int)
+     * @see IPersonService#getPersonPic(int)
      */
-    public File getPersonPic(BigPerson person);
+    File getPersonPic(BigPerson person);
 
     /**
      * 获取科学家的照片
      *
      * @param photoId
      * @return
-     * @see PersonService#getPersonPic(BigPerson)
+     * @see IPersonService#getPersonPic(BigPerson)
      */
-    public File getPersonPic(int photoId);
+    File getPersonPic(int photoId);
 
     /**
      * 根据ID查询单个科学家
      * @param personId
      * @return
      */
-    public BigPerson queryPerson(int personId);
+    BigPerson queryPerson(int personId);
 
     /**
-     * 查询所有科学家信息【支持分页查询】，pageNum 或 pageSize 为空，那么则搜索全部
+     * 【支持分页查询】，pageNum 或 pageSize 为空，那么则搜索全部
      * @param pageNum   第几页
      * @param pageSize  每页显示多少条
      * @return
      */
-    public PageInfo queryPerson(Integer pageNum, Integer pageSize);
+    PageInfo queryPerson(Integer pageNum, Integer pageSize);
+
 }

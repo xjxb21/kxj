@@ -26,7 +26,7 @@ public class MaintainPerson {
     String picDirectory;
 
     @Autowired
-    PersonService personService;
+    IPersonService IPersonService;
 
     /**
      * 根据EXCEL表中的科学家信息，更新所有的科学家信息,初始化整体维护使用
@@ -55,9 +55,9 @@ public class MaintainPerson {
                 //picFile = new File(picDirectory + "\\" + person.getPersonId()+".jpg");
                 picFile = new File(picDirectory + "\\" + personInfoArr[3]);
                 System.out.println("picFile:" + picFile.length());
-                personService.addPerson(person);
+                IPersonService.addPerson(person);
                 InputStream pin = new FileInputStream(picFile);
-                personService.istPersonPic(person, pin, (int) picFile.length());
+                IPersonService.istPersonPic(person, pin, (int) picFile.length());
                 pin.close();
             }
         } else {

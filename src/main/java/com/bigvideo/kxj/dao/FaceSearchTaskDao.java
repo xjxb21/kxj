@@ -17,7 +17,7 @@ import java.sql.SQLException;
  * Created by xiao on 2016/7/12.
  */
 @Repository(value = "faceSearchTaskDao")
-public class FaceSearchTaskDao {
+public class FaceSearchTaskDao implements IFaceSearchTaskDao {
 
     @Autowired
     JdbcTemplate jdbcTemplate;
@@ -30,6 +30,7 @@ public class FaceSearchTaskDao {
      * @param isLength
      * @return  -1代表插入失败， 成功则返回主键ID
      */
+    @Override
     public int addTask(final InputStream is, final int isLength) {
 
         String sql = "SELECT FACECHECK_AUTOID.NEXTVAL FROM DUAL";

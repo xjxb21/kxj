@@ -5,7 +5,7 @@ import java.io.InputStream;
 /**
  * Created by xiao on 2016/7/12.
  */
-public interface FaceSearchTaskService {
+public interface IFaceSearchTaskService {
 
     /**
      * 增加人脸对比任务数据，调用C++程序接口

@@ -1,6 +1,6 @@
 package com.bigvideo.kxj.controller;
 
-import com.bigvideo.kxj.service.FaceSearchTaskService;
+import com.bigvideo.kxj.service.IFaceSearchTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,7 +19,7 @@ import java.io.InputStream;
 public class InterfaceController {
 
     @Autowired
-    FaceSearchTaskService faceSearchTaskService;
+    IFaceSearchTaskService IFaceSearchTaskService;
 
     /**
      * FLEX前端POST现场图片
@@ -36,7 +36,7 @@ public class InterfaceController {
         int formLength = request.getContentLength();
 
         //执行对比任务,获取SESSIONID
-        String sessionid = faceSearchTaskService.compareFace(in, formLength);
+        String sessionid = IFaceSearchTaskService.compareFace(in, formLength);
 
         //获取对应最像的对比结果
 

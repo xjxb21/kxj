@@ -23,7 +23,7 @@ import java.sql.SQLException;
  * 科学家图片更新
  */
 @Repository(value = "bigPersonPhotoDao")
-public class BigPersonPhotoDao {
+public class BigPersonPhotoDao implements IBigPersonPhotoDao{
 
     @Value("${kxj.blankJpg}")
     String blankJpg;
@@ -38,6 +38,7 @@ public class BigPersonPhotoDao {
      *
      * @param photoId 与BIGPERSON.PERSONID关联
      */
+    @Override
     public void updatePersonPic(final int photoId, final InputStream is, final int isLength) {
 
         String sql = "UPDATE BIGPERSONPHOTO SET PERSONPHOTO = ? WHERE PHOTOID= ?";
@@ -55,6 +56,7 @@ public class BigPersonPhotoDao {
      *
      * @param photoId
      */
+    @Override
     public void emptyPersonPic(final int photoId) {
         String sql = "UPDATE BIGPERSONPHOTO SET PERSONPHOTO = NULL WHERE PHOTOID=?";
         jdbcTemplate.update(sql, new PreparedStatementSetter() {
@@ -70,6 +72,7 @@ public class BigPersonPhotoDao {
      *
      * @param photoId
      */
+    @Override
     public void delPersonPic(final int photoId) {
         String sql = "DELETE FROM BIGPERSONPHOTO WHERE PHOTOID=?";
         jdbcTemplate.update(sql, new PreparedStatementSetter() {
@@ -85,6 +88,7 @@ public class BigPersonPhotoDao {
      * @param is       图片的输入流
      * @param isLength FILE图片长度
      */
+    @Override
     public void istPersonPic(final int photoId, final InputStream is, final int isLength) {
         String sql = "INSERT INTO BIGPERSONPHOTO (PHOTOID, PERSONPHOTO) VALUES (?,?)";
         //LobHandler lobHandler = new OracleLobHandler();   //如果为ORACLE 10G 请注意使用不同的版本驱动包
@@ -102,7 +106,8 @@ public class BigPersonPhotoDao {
      *
      * @param photoId
      */
-    public synchronized File queryPersonPic(final int photoId) throws FileNotFoundException {
+    @Override
+    public synchronized File queryPersonPic(final int photoId) {
         String sql = "SELECT PERSONPHOTO FROM BIGPERSONPHOTO WHERE PHOTOID= ?";
 
         final File tmpFile = new File(blankJpg);

@@ -13,7 +13,7 @@ import java.io.InputStream;
  *
  */
 @Service(value = "faceSearchTaskService")
-public class FaceSearchTaskServiceImpl implements FaceSearchTaskService {
+public class FaceSearchTaskServiceImpl implements IFaceSearchTaskService {
 
     @Value("${kxj.faceCompareCGI}")
     String faceCompareCGI;

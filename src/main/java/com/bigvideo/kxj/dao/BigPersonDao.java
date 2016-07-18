@@ -20,7 +20,7 @@ import java.util.Map;
  * Created by xiao on 2016/7/7.
  */
 @Repository(value = "bigPersonDao")
-public class BigPersonDao {
+public class BigPersonDao implements IBigPersonDao {
 
     @Autowired
     JdbcTemplate jdbcTemplate;
@@ -31,6 +31,7 @@ public class BigPersonDao {
      * @param person
      * @return 成功返回主键
      */
+    @Override
     public int istPerson(final BigPerson person) {
         String sql = "SELECT PERSONID.NEXTVAL FROM DUAL";
         final Integer keyId = jdbcTemplate.queryForObject(sql, Integer.class);
@@ -52,6 +53,7 @@ public class BigPersonDao {
      *
      * @param person
      */
+    @Override
     public void updatePerson(final BigPerson person) {
         String sql = "UPDATE BIGPERSON SET NAME=?, HISTORY=? WHERE PERSONID=?";
         jdbcTemplate.update(sql, new PreparedStatementSetter() {
@@ -69,6 +71,7 @@ public class BigPersonDao {
      *
      * @param person
      */
+    @Override
     public void delPerson(BigPerson person) {
         //String sql = "DELETE P1.*, P2.* FROM BIGPERSON P1, BIGPERSONPHOTO P2 WHERE P1.PERSONID=P2.PHOTOID AND P1.PERSONID=?";
         String sql = "DELETE FROM BIGPERSON P1 WHERE P1.PERSONID=?";
@@ -94,7 +97,7 @@ public class BigPersonDao {
             return pagination.getResultList();
         }
     }*/
-
+    @Override
     public PageInfo queryAllPerson(Integer curPage, Integer pageSize) {
 
         PageInfo pageInfo = new PageInfo();
@@ -112,7 +115,10 @@ public class BigPersonDao {
 
     /**
      * 根据ID 获取科学家信息
+     *
+     * @param personId 科学家ID
      */
+    @Override
     public BigPerson queryPerson(int personId) {
 
         String sql = "SELECT PERSONID, NAME, HISTORY FROM BIGPERSON WHERE PERSONID=?";

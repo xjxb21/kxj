@@ -1,7 +1,7 @@
 package com.bigvideo.kxj.service;
 
-import com.bigvideo.kxj.dao.BigPersonDao;
-import com.bigvideo.kxj.dao.BigPersonPhotoDao;
+import com.bigvideo.kxj.dao.IBigPersonDao;
+import com.bigvideo.kxj.dao.IBigPersonPhotoDao;
 import com.bigvideo.kxj.dao.support.PageInfo;
 import com.bigvideo.kxj.entity.BigPerson;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,20 +9,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 /**
  * 科学家信息维护
  */
 @Service(value = "personService")
-public class PersonServiceImpl implements PersonService {
+public class PersonServiceImpl implements IPersonService {
 
     @Autowired
-    BigPersonDao bigPersonDao;
+    IBigPersonDao bigPersonDao;
 
     @Autowired
-    BigPersonPhotoDao bigPersonPhotoDao;
+    IBigPersonPhotoDao bigPersonPhotoDao;
 
     /**
      * add科学家人员信息
@@ -76,7 +75,7 @@ public class PersonServiceImpl implements PersonService {
      *
      * @param person
      * @return
-     * @see PersonService#getPersonPic(int)
+     * @see IPersonService#getPersonPic(int)
      */
     @Override
     public File getPersonPic(BigPerson person) {
@@ -88,16 +87,11 @@ public class PersonServiceImpl implements PersonService {
      *
      * @param photoId
      * @return
-     * @see PersonService#getPersonPic(BigPerson)
+     * @see IPersonService#getPersonPic(BigPerson)
      */
     @Override
     public File getPersonPic(int photoId) {
-        try {
-            return bigPersonPhotoDao.queryPersonPic(photoId);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return bigPersonPhotoDao.queryPersonPic(photoId);
     }
 
     /**
@@ -111,8 +105,9 @@ public class PersonServiceImpl implements PersonService {
         return bigPersonDao.queryPerson(personId);
     }
 
+
     /**
-     * 分页查询 查询所有科学家信息
+     * 【支持分页查询】，pageNum 或 pageSize 为空，那么则搜索全部
      *
      * @param pageNum  第几页
      * @param pageSize 每页显示多少条
