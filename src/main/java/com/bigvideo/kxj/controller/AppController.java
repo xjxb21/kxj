@@ -125,7 +125,7 @@ public class AppController {
                     IPersonService.updatePerson(bigPerson);
                     return new OperMessage("SUCCESS", "EDIT PERSON INFO SUCCESS", bigPerson.getPersonId());
                 } else {
-                    return new OperMessage("FAILED", "EDIT PERSON INFO FAILED", bigPerson.getPersonId());
+                    return new OperMessage("FAILED", "EDIT PERSON INFO FAILED， PERSON'ID IS NULL", bigPerson.getPersonId());
                 }
             case "del":
                 IPersonService.delPerson(new BigPerson(bigPerson.getPersonId(), null, null));
@@ -166,14 +166,13 @@ public class AppController {
      */
     @RequestMapping(value = "/addPersonPic4Binary", method = RequestMethod.POST)
     public OperMessage addFaceCompareTask(HttpServletRequest request, BigPerson bigPerson) {
-
         try {
             InputStream in;
             in = request.getInputStream();
             int formLength = request.getContentLength();
 
-            IPersonService.istPersonPic(bigPerson, in, formLength);
-            return new OperMessage("SUCCESS", "INSERT PERSON'S IMG FILE SUCCESS", null);
+            int retId = IPersonService.istPersonPic(bigPerson, in, formLength);
+            return new OperMessage("SUCCESS", "INSERT PERSON'S IMG FILE SUCCESS", retId);
 
         } catch (IOException e) {
             e.printStackTrace();

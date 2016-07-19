@@ -47,7 +47,7 @@ public class MaintainPerson {
 
                 BigPerson person = new BigPerson();
                 //person.setPersonId(Integer.parseInt(personInfoArr[0]));   //set id
-                person.setPersonId(Float.valueOf(personInfoArr[0]).intValue());
+                //person.setPersonId(Float.valueOf(personInfoArr[0]).intValue());
                 person.setName(personInfoArr[1]);
                 person.setHistory(personInfoArr[2]);
 
@@ -55,7 +55,10 @@ public class MaintainPerson {
                 //picFile = new File(picDirectory + "\\" + person.getPersonId()+".jpg");
                 picFile = new File(picDirectory + "\\" + personInfoArr[3]);
                 System.out.println("picFile:" + picFile.length());
-                IPersonService.addPerson(person);
+
+                int PersonKey= IPersonService.addPerson(person);
+                person.setPersonId(PersonKey);
+
                 InputStream pin = new FileInputStream(picFile);
                 IPersonService.istPersonPic(person, pin, (int) picFile.length());
                 pin.close();

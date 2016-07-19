@@ -45,4 +45,12 @@ public interface IBigPersonDao {
      * @param personId 科学家ID
      */
     BigPerson queryPerson(int personId);
+
+    /**
+     * 根据关键字搜索
+     * @param field 字段名
+     * @param key  关键字
+     * @return
+     */
+    PageInfo searchByKey(String field, String key);
 }

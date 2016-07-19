@@ -34,7 +34,7 @@ public class BigPersonPhotoDao implements IBigPersonPhotoDao{
     private final LobHandler lobHandler = new DefaultLobHandler();
 
     /**
-     * 更新科学家图片
+     * 根据photoId更新图片
      *
      * @param photoId 与BIGPERSON.PERSONID关联
      */
@@ -52,7 +52,7 @@ public class BigPersonPhotoDao implements IBigPersonPhotoDao{
     }
 
     /***
-     * 重置 清空科学家图片Blob字段内容
+     * 根据photoId清空Blob字段内容
      *
      * @param photoId
      */
@@ -68,7 +68,7 @@ public class BigPersonPhotoDao implements IBigPersonPhotoDao{
     }
 
     /**
-     * 删除对应的科学家图片记录
+     * 根据photoId删除对应的图片
      *
      * @param photoId
      */
@@ -84,21 +84,58 @@ public class BigPersonPhotoDao implements IBigPersonPhotoDao{
     }
 
     /**
-     * @param photoId  插入图片的ID
-     * @param is       图片的输入流
-     * @param isLength FILE图片长度
+     * 根据personId 删除对应的图片
+     * @param personId
      */
     @Override
-    public void istPersonPic(final int photoId, final InputStream is, final int isLength) {
-        String sql = "INSERT INTO BIGPERSONPHOTO (PHOTOID, PERSONPHOTO) VALUES (?,?)";
+    public void delPersonPicByPersonID(final int personId) {
+        String sql = "DELETE FROM BIGPERSONPHOTO WHERE PERSONID=?";
+        jdbcTemplate.update(sql, new PreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement ps) throws SQLException {
+                ps.setInt(1, personId);
+            }
+        });
+    }
+
+    /**
+     * @param personId  人员ID
+     * @param is       图片的输入流
+     * @param isLength FILE图片长度
+     * @return 如果personId为null，返回生成的personId；否则返回图片的photoId
+     */
+    @Override
+    public int istPersonPic(final Integer personId, final InputStream is, final int isLength) {
+
+        String sql;
+        int retId;
+        final int personIdVal;
+
+        sql = "SELECT PERSONPHOTO_AUTOID.NEXTVAL FROM DUAL";
+        final Integer photoId = jdbcTemplate.queryForObject(sql, Integer.class);
+        retId = photoId;
+
+        if (null == personId) {
+            //如果PERSONID 为空 则生成一个PERSONID出来，retId 为 persondId
+            sql = "SELECT PERSONID.NEXTVAL FROM DUAL";
+            personIdVal = jdbcTemplate.queryForObject(sql, Integer.class);
+            retId = personIdVal;
+        } else {
+            personIdVal = personId.intValue();
+        }
+
+        sql = "INSERT INTO BIGPERSONPHOTO (PHOTOID, PERSONID, PERSONPHOTO) VALUES (?,?,?)";
         //LobHandler lobHandler = new OracleLobHandler();   //如果为ORACLE 10G 请注意使用不同的版本驱动包
         jdbcTemplate.execute(sql, new AbstractLobCreatingPreparedStatementCallback(lobHandler) {
             @Override
             protected void setValues(PreparedStatement ps, LobCreator lobCreator) throws SQLException, DataAccessException {
                 ps.setInt(1, photoId);
-                lobCreator.setBlobAsBinaryStream(ps, 2, is, isLength);
+                ps.setInt(2, personIdVal);
+                lobCreator.setBlobAsBinaryStream(ps, 3, is, isLength);
             }
         });
+
+        return retId;
     }
 
     /**

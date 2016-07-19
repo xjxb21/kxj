@@ -39,7 +39,7 @@ public class PersonServiceImpl implements IPersonService {
     @Transactional
     public void delPerson(BigPerson person) {
         bigPersonDao.delPerson(person);
-        bigPersonPhotoDao.delPersonPic(person.getPersonId());
+        bigPersonPhotoDao.delPersonPicByPersonID(person.getPersonId());
     }
 
     /**
@@ -66,8 +66,8 @@ public class PersonServiceImpl implements IPersonService {
      * @param inLength 文件长度
      */
     @Override
-    public void istPersonPic(BigPerson person, InputStream in, int inLength) {
-        bigPersonPhotoDao.istPersonPic(person.getPersonId(), in, inLength);
+    public int istPersonPic(BigPerson person, InputStream in, int inLength) {
+        return bigPersonPhotoDao.istPersonPic(person.getPersonId(), in, inLength);
     }
 
     /**
@@ -117,5 +117,17 @@ public class PersonServiceImpl implements IPersonService {
     public PageInfo queryPerson(Integer pageNum, Integer pageSize) {
         PageInfo pageInfo = bigPersonDao.queryAllPerson(pageNum, pageSize);
         return pageInfo;
+    }
+
+    /**
+     * 根据关键字搜索
+     *
+     * @param bigPerson
+     * @return
+     */
+    @Override
+    public PageInfo searchPerson(BigPerson bigPerson) {
+        //根据名字搜索
+        return bigPersonDao.searchByKey("name", bigPerson.getName());
     }
 }

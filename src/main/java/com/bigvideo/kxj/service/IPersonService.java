@@ -2,6 +2,7 @@ package com.bigvideo.kxj.service;
 
 import com.bigvideo.kxj.dao.support.PageInfo;
 import com.bigvideo.kxj.entity.BigPerson;
+import com.sun.javafx.sg.PGEllipse;
 
 import java.io.File;
 import java.io.InputStream;
@@ -13,6 +14,7 @@ public interface IPersonService {
 
     /**
      * 添加科学家人员
+     *
      * @param person
      * @return 记录主键ID
      */
@@ -32,7 +34,7 @@ public interface IPersonService {
     /**
      * 更新科学家个人照片
      */
-    void updatePersonPic(BigPerson person, InputStream in, int inLength) ;
+    void updatePersonPic(BigPerson person, InputStream in, int inLength);
 
     /**
      * 添加科学家照片
@@ -40,8 +42,9 @@ public interface IPersonService {
      * @param person
      * @param in       图片流
      * @param inLength 文件长度
+     * @return id 返回插入的图片ID
      */
-    void istPersonPic(BigPerson person, InputStream in, int inLength) ;
+    int istPersonPic(BigPerson person, InputStream in, int inLength);
 
 
     /**
@@ -64,6 +67,7 @@ public interface IPersonService {
 
     /**
      * 根据ID查询单个科学家
+     *
      * @param personId
      * @return
      */
@@ -71,10 +75,18 @@ public interface IPersonService {
 
     /**
      * 【支持分页查询】，pageNum 或 pageSize 为空，那么则搜索全部
-     * @param pageNum   第几页
-     * @param pageSize  每页显示多少条
+     *
+     * @param pageNum  第几页
+     * @param pageSize 每页显示多少条
      * @return
      */
     PageInfo queryPerson(Integer pageNum, Integer pageSize);
 
+    /**
+     * 根据关键字搜索
+     *
+     * @param bigPerson
+     * @return
+     */
+    PageInfo searchPerson(BigPerson bigPerson);
 }

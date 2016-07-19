@@ -7,8 +7,11 @@ import java.io.InputStream;
  */
 public class BigPersonPhoto {
 
-    //科学家图片ID，与Bigperson.personid关联
+    // 科学家图片ID
     Integer photoId;
+
+    // 与Bigperson.personid关联
+    Integer personId;
 
     //科学家图片
     InputStream is;
@@ -27,5 +30,13 @@ public class BigPersonPhoto {
 
     public void setPhotoId(Integer photoId) {
         this.photoId = photoId;
+    }
+
+    public Integer getPersonId() {
+        return personId;
+    }
+
+    public void setPersonId(Integer personId) {
+        this.personId = personId;
     }
 }

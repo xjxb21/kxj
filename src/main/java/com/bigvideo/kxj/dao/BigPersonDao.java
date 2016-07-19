@@ -8,8 +8,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
+import java.security.Key;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -138,6 +138,24 @@ public class BigPersonDao implements IBigPersonDao {
             //结果集小于0 或 大于1 会Spring会抛出异常
             System.out.println(e.getMessage());
         }
+        return null;
+    }
+
+    /**
+     * 根据关键字搜索
+     *
+     * @param field 字段名
+     * @param key   关键字
+     * @return
+     */
+    @Override
+    public PageInfo searchByKey(String field, String key) {
+        /*PageInfo pageInfo = new PageInfo();
+        String sql = "SELECT * FROM BIGPERSON WHERE " + field + " LIKE %"+ key+"%";
+
+        Pagination pagination = new Pagination(curPage, pageSize, sql, jdbcTemplate);
+        pageInfo.setTotalRows(pagination.getTotalRows());
+        pageInfo.setListInfo(pagination.getResultList());*/
         return null;
     }
 }
