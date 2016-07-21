@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.util.List;
 
 /**
  * Created by xiao on 2016/7/6.
@@ -20,7 +21,7 @@ import java.io.*;
 public class AppController {
 
     @Autowired
-    IPersonService IPersonService;
+    IPersonService personService;
 
     /**
      * 查询所有的科学家信息，如果缺少任何一个参数，则搜索所有
@@ -29,32 +30,20 @@ public class AppController {
      * @param pageNum  第几页
      * @return
      */
-    /*@RequestMapping(value = "getAllPerson", method = RequestMethod.GET)
-    public List<BigPerson> queryAllPerson(@RequestParam(name = "pageSize", required = false) Integer pageSize,
-                                          @RequestParam(name = "pageNum", required = false) Integer pageNum) {
-        //跨域访问
-        //httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
-        return IPersonService.queryPerson(pageNum, pageSize);
-    }*/
     @RequestMapping(value = "getAllPerson", method = RequestMethod.GET)
     public PageInfo queryAllPerson(@RequestParam(name = "pageSize", required = false) Integer pageSize,
-                                   @RequestParam(name = "pageNum", required = false) Integer pageNum) {
+                                   @RequestParam(name = "pageNum", required = false) Integer pageNum,
+                                   @RequestParam(name = "searchName", required = false) String nameKey) {
+
         //跨域访问
         //httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
-        return IPersonService.queryPerson(pageNum, pageSize);
+        StringBuilder querySql = new StringBuilder("SELECT PERSONID, NAME, HISTORY FROM BIGPERSON");
 
-    }
-
-    /**
-     * 搜索科学家信息
-     * @param bigPerson
-     * @return
-     */
-    @RequestMapping(value = "searchPerson")
-    public PageInfo searchPerson(BigPerson bigPerson) {
-        System.out.println(bigPerson.toString());
-
-        return null;
+        if (nameKey != null) {
+            querySql.append(" WHERE NAME LIKE '%" + nameKey + "%'");
+        }
+        System.out.println(querySql.toString());
+        return personService.queryPerson(querySql.toString(), pageNum, pageSize);
     }
 
     /**
@@ -65,20 +54,20 @@ public class AppController {
      */
     @RequestMapping(value = "getPerson/{id}", method = RequestMethod.GET)
     public BigPerson queryPerson(@PathVariable("id") int id) {
-        BigPerson person = IPersonService.queryPerson(id);
+        BigPerson person = personService.queryPerson(id);
         return person;
     }
 
     /**
      * 获取科学家图片
      *
-     * @param id       人员ID
+     * @param photoId       图片photoId
      * @param response
      * @throws IOException
      */
-    @RequestMapping(value = "getPic/{id}", method = RequestMethod.GET)
-    public void getPic(@PathVariable("id") int id, HttpServletResponse response) throws IOException {
-        File tarFile = IPersonService.getPersonPic(id);
+    @RequestMapping(value = "getPic/{photoId}", method = RequestMethod.GET)
+    public void getPic(@PathVariable("photoId") int photoId, HttpServletResponse response) throws IOException {
+        File tarFile = personService.getPersonPicByPhotoId(photoId);
 
         InputStream in = new FileInputStream(tarFile);
         int i = in.available();
@@ -93,13 +82,17 @@ public class AppController {
         outputStream.close();
     }
 
-    /*public BigPerson getBigperson(@ModelAttribute(value = "personId") Integer personId){
-        if (personId != null) {
-            System.out.println("modeAttribute bigperson..."+personId);
-        }
-        return new BigPerson(2, "xiao", "xiao 's hisgory!!");
-    }*/
+    /**
+     * 根据PERSONID 获取 PHOTOID集合
+     * @param personId
+     * @return
+     */
+    @RequestMapping(value = "getPic")
+    public List<Integer> getPicListByPersonId(@RequestParam(value = "pid") int personId) {
 
+        List<Integer> list = personService.getPersonPicByPersonId(personId);
+        return list;
+    }
 
     /**
      * 处理jqgrid的数据操作
@@ -116,19 +109,19 @@ public class AppController {
 
         switch (oper) {
             case "add":
-                BigPerson addPerson = new BigPerson(null, bigPerson.getName(), bigPerson.getHistory());
-                int pid = IPersonService.addPerson(addPerson);
+                BigPerson addPerson = new BigPerson(bigPerson.getPersonId(), bigPerson.getName(), bigPerson.getHistory());
+                int pid = personService.addPerson(addPerson);
                 return new OperMessage("SUCCESS", "SAVE PERSON INFO SUCCESS", pid);
             case "edit":
                 if (bigPerson.getPersonId() != null) {
                     //更新单独的科学家信息(不包含图片)
-                    IPersonService.updatePerson(bigPerson);
+                    personService.updatePerson(bigPerson);
                     return new OperMessage("SUCCESS", "EDIT PERSON INFO SUCCESS", bigPerson.getPersonId());
                 } else {
                     return new OperMessage("FAILED", "EDIT PERSON INFO FAILED， PERSON'ID IS NULL", bigPerson.getPersonId());
                 }
             case "del":
-                IPersonService.delPerson(new BigPerson(bigPerson.getPersonId(), null, null));
+                personService.delPerson(new BigPerson(bigPerson.getPersonId(), null, null));
                 return new OperMessage("SUCCESS", "DELETE PERSON INFO SUCCESS", bigPerson.getPersonId());
         }
 
@@ -148,7 +141,7 @@ public class AppController {
         if (!file.isEmpty()) {
             try {
                 InputStream inFile = file.getInputStream();
-                IPersonService.istPersonPic(new BigPerson(pid, null, null), inFile, new Long(file.getSize()).intValue());
+                personService.istPersonPic(new BigPerson(pid, null, null), inFile, new Long(file.getSize()).intValue());
             } catch (IOException e) {
                 e.printStackTrace();
                 return new OperMessage("FAILED", "SAVE PERSON'S IMG FILE FAILED", pid);
@@ -171,7 +164,7 @@ public class AppController {
             in = request.getInputStream();
             int formLength = request.getContentLength();
 
-            int retId = IPersonService.istPersonPic(bigPerson, in, formLength);
+            int retId = personService.istPersonPic(bigPerson, in, formLength);
             return new OperMessage("SUCCESS", "INSERT PERSON'S IMG FILE SUCCESS", retId);
 
         } catch (IOException e) {

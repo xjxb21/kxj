@@ -17,6 +17,7 @@ import java.io.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * Created by xiao on 2016/7/7.
@@ -144,7 +145,7 @@ public class BigPersonPhotoDao implements IBigPersonPhotoDao{
      * @param photoId
      */
     @Override
-    public synchronized File queryPersonPic(final int photoId) {
+    public synchronized File queryPersonPicByPhotoId(final int photoId) {
         String sql = "SELECT PERSONPHOTO FROM BIGPERSONPHOTO WHERE PHOTOID= ?";
 
         final File tmpFile = new File(blankJpg);
@@ -157,6 +158,19 @@ public class BigPersonPhotoDao implements IBigPersonPhotoDao{
             }
         });
         return tmpFile;
+    }
+
+    /**
+     * 根据personId查找对应的图片
+     *
+     * @param personId
+     * 返回对应图片的 photoId 集合
+     */
+    @Override
+    public List queryPersonPicByPersonId(int personId) {
+        String sql = "SELECT PHOTOID FROM BIGPERSONPHOTO WHERE PERSONID= ?";
+        List<Integer> photoIdList = jdbcTemplate.queryForList(sql, Integer.class, new Object[]{new Integer(personId)});
+        return photoIdList;
     }
 
 }

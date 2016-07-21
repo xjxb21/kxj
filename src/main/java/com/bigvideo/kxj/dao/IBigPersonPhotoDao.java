@@ -2,6 +2,7 @@ package com.bigvideo.kxj.dao;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.List;
 
 /**
  * Created by xiao on 2016/7/18.
@@ -47,5 +48,14 @@ public interface IBigPersonPhotoDao {
      *
      * @param photoId
      */
-    File queryPersonPic(final int photoId);
+    File queryPersonPicByPhotoId(final int photoId);
+
+    /**
+     * 根据personId查找对应的图片
+     *
+     * @param personId
+     * @return 返回对应图片的 photoId 集合
+     */
+    List queryPersonPicByPersonId(final int personId);
+
 }

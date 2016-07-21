@@ -5,6 +5,7 @@
 
 	<groupId>com.bigvideo.kxj</groupId>
 	<artifactId>kxjupdate</artifactId>
+
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
@@ -32,17 +33,11 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-		<!--<dependency>
-			<groupId>org.springframework.data</groupId>
-			<artifactId>spring-data-jpa</artifactId>
-		</dependency>-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
@@ -55,6 +50,15 @@
 			<artifactId>poi</artifactId>
 			<version>3.14</version>
 		</dependency>
+
+		<!--&lt;!&ndash;这里可以指明scope是system,然后制定这个依赖包的systemPath就可以啦。这里依ik-analyzer为例的。&ndash;&gt;
+		<dependency>
+			<groupId>org.oracle</groupId>
+			<artifactId>jdbc</artifactId>
+			<version>11.0.2.4</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/ojdbc6.jar</systemPath>
+		</dependency>-->
 
 	</dependencies>
 	

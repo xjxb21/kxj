@@ -54,7 +54,7 @@ public class Pagination extends JdbcDaoSupport {
         setPageSize(pageSize);
         // 设置要显示的页数
         setCurrentPage(currentPage);
-        System.out.println("Pagination currentPage=" + currentPage);
+        //System.out.println("Pagination currentPage=" + currentPage);
         // 计算总记录数
         StringBuffer totalSQL = new StringBuffer(" SELECT count(1) FROM ( ");
         totalSQL.append(sql);
@@ -70,17 +70,17 @@ public class Pagination extends JdbcDaoSupport {
         setStartIndex();
         // 计算结束行数
         setLastIndex();
-        System.out.println("lastIndex=" + lastIndex);// ////////////////
+        //System.out.println("lastIndex=" + lastIndex);// ////////////////
         // 构造oracle数据库的分页语句
         StringBuffer paginationSQL = new StringBuffer(" SELECT * FROM ( ");
         paginationSQL.append(" SELECT temp.* ,ROWNUM num FROM ( ");
         paginationSQL.append(sql);
         paginationSQL.append("　) temp where ROWNUM <= " + lastIndex);
         paginationSQL.append(" ) WHERE　num > " + startIndex);
-        System.out.println("sql:" + paginationSQL.toString());
+        //System.out.println("sql:" + paginationSQL.toString());
         // 装入结果集
         //setResultList(getJdbcTemplate().query(paginationSQL.toString(), rowMapper));
-        System.out.println(paginationSQL.toString());
+        //System.out.println(paginationSQL.toString());
         setResultList(getJdbcTemplate().queryForList(paginationSQL.toString()));
     }
 
@@ -90,8 +90,8 @@ public class Pagination extends JdbcDaoSupport {
 
     // 计算结束时候的索引
     public void setLastIndex() {
-        System.out.println("totalRows=" + totalRows);// /////////
-        System.out.println("pageSize=" + pageSize);// /////////
+        //System.out.println("totalRows=" + totalRows);// /////////
+        //System.out.println("pageSize=" + pageSize);// /////////
         if (totalRows < pageSize) {
             this.lastIndex = totalRows;
         } else if ((totalRows % pageSize == 0)

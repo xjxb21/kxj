@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.List;
 
 /**
  * 科学家信息维护
@@ -71,27 +72,26 @@ public class PersonServiceImpl implements IPersonService {
     }
 
     /**
-     * GET科学家的照片
+     * 根据PERSONID, GET科学家的照片列表
      *
-     * @param person
-     * @return
-     * @see IPersonService#getPersonPic(int)
+     * @param personId
+     * @return  photoId列表
+     * @see IPersonService#getPersonPicByPersonId(int)
      */
     @Override
-    public File getPersonPic(BigPerson person) {
-        return getPersonPic(person.getPersonId());
+    public List<Integer> getPersonPicByPersonId(int personId) {
+        return bigPersonPhotoDao.queryPersonPicByPersonId(personId);
     }
 
     /**
-     * GET科学家的照片
+     * 根据photoId , GET科学家的照片
      *
      * @param photoId
      * @return
-     * @see IPersonService#getPersonPic(BigPerson)
      */
     @Override
-    public File getPersonPic(int photoId) {
-        return bigPersonPhotoDao.queryPersonPic(photoId);
+    public File getPersonPicByPhotoId(int photoId) {
+        return bigPersonPhotoDao.queryPersonPicByPhotoId(photoId);
     }
 
     /**
@@ -107,27 +107,16 @@ public class PersonServiceImpl implements IPersonService {
 
 
     /**
-     * 【支持分页查询】，pageNum 或 pageSize 为空，那么则搜索全部
+     * 【支持分页查询】，pageNum 或 pageSize 为空，那么则搜索全部 （不能支持LOB等类型）
      *
+     * @param querySql 分页前的SQL
      * @param pageNum  第几页
      * @param pageSize 每页显示多少条
      * @return
      */
     @Override
-    public PageInfo queryPerson(Integer pageNum, Integer pageSize) {
-        PageInfo pageInfo = bigPersonDao.queryAllPerson(pageNum, pageSize);
+    public PageInfo queryPerson(String querySql, Integer pageNum, Integer pageSize) {
+        PageInfo pageInfo = bigPersonDao.queryAllPerson(querySql, pageNum, pageSize);
         return pageInfo;
-    }
-
-    /**
-     * 根据关键字搜索
-     *
-     * @param bigPerson
-     * @return
-     */
-    @Override
-    public PageInfo searchPerson(BigPerson bigPerson) {
-        //根据名字搜索
-        return bigPersonDao.searchByKey("name", bigPerson.getName());
     }
 }

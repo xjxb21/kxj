@@ -33,11 +33,12 @@ public interface IBigPersonDao {
     /**
      * 获取所有的科学家信息【支持分页】
      *
+     * @param querySql 查询的SQL
      * @param curPage
      * @param pageSize
      * @return
      */
-    PageInfo queryAllPerson(Integer curPage, Integer pageSize);
+    PageInfo queryAllPerson(String querySql, Integer curPage, Integer pageSize);
 
     /**
      * 根据ID 获取科学家信息
@@ -45,12 +46,4 @@ public interface IBigPersonDao {
      * @param personId 科学家ID
      */
     BigPerson queryPerson(int personId);
-
-    /**
-     * 根据关键字搜索
-     * @param field 字段名
-     * @param key  关键字
-     * @return
-     */
-    PageInfo searchByKey(String field, String key);
 }

@@ -33,14 +33,21 @@ public class BigPersonDao implements IBigPersonDao {
      */
     @Override
     public int istPerson(final BigPerson person) {
-        String sql = "SELECT PERSONID.NEXTVAL FROM DUAL";
-        final Integer keyId = jdbcTemplate.queryForObject(sql, Integer.class);
+
+        final int keyId;
+        if (person.getPersonId() != null) {
+            keyId = person.getPersonId();
+        } else {
+            String sql = "SELECT PERSONID.NEXTVAL FROM DUAL";
+            keyId = jdbcTemplate.queryForObject(sql, Integer.class);
+        }
+
 
         String istSql = "INSERT INTO BIGPERSON (PERSONID, NAME, HISTORY) VALUES (?,?,?)";
         jdbcTemplate.update(istSql, new PreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement preparedStatement) throws SQLException {
-                preparedStatement.setInt(1, keyId.intValue());
+                preparedStatement.setInt(1, keyId);
                 preparedStatement.setString(2, person.getName());
                 preparedStatement.setString(3, person.getHistory());
             }
@@ -82,6 +89,7 @@ public class BigPersonDao implements IBigPersonDao {
     /**
      * 获取所有的科学家信息【支持分页】
      *
+     * @param querySql
      * @param curPage
      * @param pageSize
      * @return
@@ -98,15 +106,14 @@ public class BigPersonDao implements IBigPersonDao {
         }
     }*/
     @Override
-    public PageInfo queryAllPerson(Integer curPage, Integer pageSize) {
+    public PageInfo queryAllPerson(String querySql, Integer curPage, Integer pageSize) {
 
         PageInfo pageInfo = new PageInfo();
-        String sql = "SELECT PERSONID, NAME, HISTORY FROM BIGPERSON";
         if (curPage == null || pageSize == null) {
-            List<Map<String, Object>> mapList = jdbcTemplate.queryForList(sql);
+            List<Map<String, Object>> mapList = jdbcTemplate.queryForList(querySql);
             pageInfo.setListInfo(mapList);
         } else {
-            Pagination pagination = new Pagination(curPage, pageSize, sql, jdbcTemplate);
+            Pagination pagination = new Pagination(curPage, pageSize, querySql, jdbcTemplate);
             pageInfo.setTotalRows(pagination.getTotalRows());
             pageInfo.setListInfo(pagination.getResultList());
         }
@@ -138,24 +145,6 @@ public class BigPersonDao implements IBigPersonDao {
             //结果集小于0 或 大于1 会Spring会抛出异常
             System.out.println(e.getMessage());
         }
-        return null;
-    }
-
-    /**
-     * 根据关键字搜索
-     *
-     * @param field 字段名
-     * @param key   关键字
-     * @return
-     */
-    @Override
-    public PageInfo searchByKey(String field, String key) {
-        /*PageInfo pageInfo = new PageInfo();
-        String sql = "SELECT * FROM BIGPERSON WHERE " + field + " LIKE %"+ key+"%";
-
-        Pagination pagination = new Pagination(curPage, pageSize, sql, jdbcTemplate);
-        pageInfo.setTotalRows(pagination.getTotalRows());
-        pageInfo.setListInfo(pagination.getResultList());*/
         return null;
     }
 }
