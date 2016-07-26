@@ -145,7 +145,7 @@ public class BigPersonPhotoDao implements IBigPersonPhotoDao{
      * @param photoId
      */
     @Override
-    public synchronized File queryPersonPicByPhotoId(final int photoId) {
+    public synchronized File getPersonPicByPhotoId(final int photoId) {
         String sql = "SELECT PERSONPHOTO FROM BIGPERSONPHOTO WHERE PHOTOID= ?";
 
         final File tmpFile = new File(blankJpg);
@@ -161,16 +161,28 @@ public class BigPersonPhotoDao implements IBigPersonPhotoDao{
     }
 
     /**
-     * 根据personId查找对应的图片
+     * 根据personId查找对应的图片photoId 集合
      *
      * @param personId
      * 返回对应图片的 photoId 集合
      */
     @Override
-    public List queryPersonPicByPersonId(int personId) {
+    public List getPersonPicByPersonId(int personId) {
         String sql = "SELECT PHOTOID FROM BIGPERSONPHOTO WHERE PERSONID= ?";
         List<Integer> photoIdList = jdbcTemplate.queryForList(sql, Integer.class, new Object[]{new Integer(personId)});
         return photoIdList;
+    }
+
+    /**
+     * 根据photoId 查询对应的人员personId
+     *
+     * @param photoId 图片ID
+     * @return
+     */
+    @Override
+    public int getPersonIdByPhotoId(int photoId) {
+        String sql = "SELECT PERSONID FROM BIGPERSONPHOTO WHERE PHOTOID = ?";
+        return jdbcTemplate.queryForObject(sql, new Object[]{photoId}, Integer.class);
     }
 
 }

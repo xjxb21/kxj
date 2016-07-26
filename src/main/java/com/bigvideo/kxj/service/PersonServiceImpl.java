@@ -80,7 +80,7 @@ public class PersonServiceImpl implements IPersonService {
      */
     @Override
     public List<Integer> getPersonPicByPersonId(int personId) {
-        return bigPersonPhotoDao.queryPersonPicByPersonId(personId);
+        return bigPersonPhotoDao.getPersonPicByPersonId(personId);
     }
 
     /**
@@ -91,7 +91,7 @@ public class PersonServiceImpl implements IPersonService {
      */
     @Override
     public File getPersonPicByPhotoId(int photoId) {
-        return bigPersonPhotoDao.queryPersonPicByPhotoId(photoId);
+        return bigPersonPhotoDao.getPersonPicByPhotoId(photoId);
     }
 
     /**

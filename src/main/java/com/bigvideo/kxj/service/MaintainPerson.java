@@ -42,12 +42,12 @@ public class MaintainPerson {
             Map<Integer, String> PersonInfoMap = excelReader.readExcelContent(is2);
 
             for (int i = 1; i <= PersonInfoMap.size(); i++) {
-                System.out.println(PersonInfoMap.get(i));
+                //System.out.println(PersonInfoMap.get(i));
                 String[] personInfoArr = PersonInfoMap.get(i).split("###");
 
                 BigPerson person = new BigPerson();
                 //person.setPersonId(Integer.parseInt(personInfoArr[0]));   //set id
-                //person.setPersonId(Float.valueOf(personInfoArr[0]).intValue());
+                person.setPersonId(Float.valueOf(personInfoArr[0]).intValue());
                 person.setName(personInfoArr[1]);
                 person.setHistory(personInfoArr[2]);
 

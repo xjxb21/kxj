@@ -42,7 +42,6 @@ public class AppController {
         if (nameKey != null) {
             querySql.append(" WHERE NAME LIKE '%" + nameKey + "%'");
         }
-        System.out.println(querySql.toString());
         return personService.queryPerson(querySql.toString(), pageNum, pageSize);
     }
 
@@ -104,9 +103,6 @@ public class AppController {
     @RequestMapping(value = "doPerson")
     public OperMessage addPerson(@RequestParam(name = "oper") String oper,
                                  BigPerson bigPerson) {
-        System.out.println("oper is:" + oper);
-        System.out.println(bigPerson.toString());
-
         switch (oper) {
             case "add":
                 BigPerson addPerson = new BigPerson(bigPerson.getPersonId(), bigPerson.getName(), bigPerson.getHistory());

@@ -48,7 +48,7 @@ public interface IBigPersonPhotoDao {
      *
      * @param photoId
      */
-    File queryPersonPicByPhotoId(final int photoId);
+    File getPersonPicByPhotoId(final int photoId);
 
     /**
      * 根据personId查找对应的图片
@@ -56,6 +56,14 @@ public interface IBigPersonPhotoDao {
      * @param personId
      * @return 返回对应图片的 photoId 集合
      */
-    List queryPersonPicByPersonId(final int personId);
+    List getPersonPicByPersonId(final int personId);
+
+    /**
+     * 根据photoId 查询对应的人员personId
+     *
+     * @param photoId 图片ID
+     * @return
+     */
+    int getPersonIdByPhotoId(int photoId);
 
 }

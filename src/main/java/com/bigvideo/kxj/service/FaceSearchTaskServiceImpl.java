@@ -26,11 +26,12 @@ public class FaceSearchTaskServiceImpl implements IFaceSearchTaskService {
      *
      * @param is       对比的图片输入流
      * @param isLength 流的长度
-     * @return 对比接口返回的对比会话ID，会话ID为 FACESEARCHRESULT.SESSIONID
+     * @return 对比接口返回的对比会话ID，会话ID为 FACESEARCHRESULT.SESSIONID, 如果没有匹配 则返回-1
      */
     @Override
-    public String compareFace(InputStream is, int isLength) {
-        return invokeHttpInterface(addTask(is, isLength));
+    public int compareFace(InputStream is, int isLength) {
+        String retSessionId = invokeHttpInterface(addTask(is, isLength));
+        return Integer.valueOf(retSessionId);
     }
 
     /**
@@ -51,6 +52,7 @@ public class FaceSearchTaskServiceImpl implements IFaceSearchTaskService {
      * @return
      */
     private String invokeHttpInterface(int TaskId) {
+
         return RequestCompareFace.sendGet(this.faceCompareCGI, "TaskID=" + TaskId);
     }
 

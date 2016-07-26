@@ -13,5 +13,5 @@ public interface IFaceSearchTaskService {
      * @param isLength  流的长度
      * @return  对比接口返回的对比会话ID，会话ID为 FACESEARCHRESULT.SESSIONID
      */
-    public String compareFace(InputStream is, int isLength);
+    int compareFace(InputStream is, int isLength);
 }

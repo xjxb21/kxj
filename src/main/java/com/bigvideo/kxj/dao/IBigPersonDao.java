@@ -46,4 +46,5 @@ public interface IBigPersonDao {
      * @param personId 科学家ID
      */
     BigPerson queryPerson(int personId);
+
 }
