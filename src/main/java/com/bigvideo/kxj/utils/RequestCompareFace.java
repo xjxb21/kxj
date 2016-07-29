@@ -98,7 +98,6 @@ public class RequestCompareFace {
         BufferedReader in = null;
         try {
             String urlNameString = url + "?" + param;
-            System.out.println("url:"+url);
             URL realUrl = new URL(urlNameString);
             // 打开和URL之间的连接
             URLConnection connection = realUrl.openConnection();

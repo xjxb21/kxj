@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by xiao on 2016/7/12.
@@ -54,20 +55,22 @@ public class InterfaceController {
         //执行对比任务,获取SESSIONID
         int sessionid = faceSearchTaskService.compareFace(in, formLength);
 
-        List<Integer> retList = new ArrayList();
+        List<Map> retList;
 
-        //获取对应最像的对比结果
+        //获取对应最像的对比结果\
         if (sessionid != -1) {
             retList = faceSearchResultSrv.getPhotoIdsBySessionId(sessionid);
-            System.out.println("retList:"+retList.toString());
+            //System.out.println("retList:"+retList.toString());
             if (retList.isEmpty()) {
                 System.out.println("没有找到 sessionid 为：" + sessionid + "对应的科学家列表");
             }else{
                 //获取photoid, 找到对应的科学家信息
-                int photoId = retList.get(0);
+                int photoId = (int)retList.get(0).get("photoId");
                 int personId = bigPersonPhotoDao.getPersonIdByPhotoId(photoId);
                 BigPerson person = bigPersonDao.queryPerson(personId);
-                return new OperMessageCompareRet("SUCCESS", "INVOKE HTTP INTERFACE SUCCESS.", person);
+                OperMessageCompareRet retMsg = new OperMessageCompareRet("SUCCESS", "INVOKE HTTP INTERFACE SUCCESS.", person);
+                retMsg.setMaxScore((Double) retList.get(0).get("score"));
+                return retMsg;
             }
         } else {
             return new OperMessageCompareRet("FAILED", "COMPARE SESSIONID is -1.", null);

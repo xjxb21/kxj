@@ -8,6 +8,7 @@ import com.bigvideo.kxj.entity.BigPerson;
 public class OperMessageCompareRet extends OperMessage {
 
     private BigPerson person;
+    private double MaxScore;   //对比最高比分值
 
     public OperMessageCompareRet(String status, String message, BigPerson person) {
         super(status, message);
@@ -20,5 +21,13 @@ public class OperMessageCompareRet extends OperMessage {
 
     public void setPerson(BigPerson person) {
         this.person = person;
+    }
+
+    public double getMaxScore() {
+        return MaxScore;
+    }
+
+    public void setMaxScore(double maxScore) {
+        MaxScore = maxScore;
     }
 }

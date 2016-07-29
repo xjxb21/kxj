@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by xiao on 2016/7/12.
@@ -30,7 +32,8 @@ public class FaceSearchTaskServiceImpl implements IFaceSearchTaskService {
      */
     @Override
     public int compareFace(InputStream is, int isLength) {
-        String retSessionId = invokeHttpInterface(addTask(is, isLength));
+        int taskId = addTask(is, isLength);
+        String retSessionId = invokeHttpInterface(taskId);
         return Integer.valueOf(retSessionId);
     }
 

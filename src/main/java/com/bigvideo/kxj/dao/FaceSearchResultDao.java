@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.AbstractLobStreamingResultSetExtractor;
 import org.springframework.jdbc.support.lob.DefaultLobHandler;
 import org.springframework.jdbc.support.lob.LobHandler;
@@ -14,7 +15,9 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by xiao on 2016/7/21.
@@ -36,12 +39,28 @@ public class FaceSearchResultDao implements IFaceSearchResultDao {
      * @param sessionId
      * @return
      */
-    @Override
+   /* @Override
     public List<Integer> getPhotoIdBySessionId(int sessionId) {
 
         String sql = "SELECT PHOTOID FROM FACESEARCHRESULT WHERE SESSIONID=?";
         List photoIdList = jdbcTemplate.queryForList(sql, Integer.class, new Object[]{new Integer(sessionId)});
         return photoIdList;
+    }*/
+
+    @Override
+    public List<Map> getPhotoIdBySessionId(int sessionId) {
+
+        String sql = "SELECT PHOTOID, SCORE FROM FACESEARCHRESULT WHERE SESSIONID=?";
+        List<Map> retList = jdbcTemplate.query(sql, new Object[]{new Integer(sessionId)}, new RowMapper<Map>(){
+            @Override
+            public Map mapRow(ResultSet rs, int rowNum) throws SQLException {
+                Map row = new HashMap();
+                row.put("photoId", rs.getInt("PHOTOID"));
+                row.put("score", rs.getDouble("SCORE"));
+                return row;
+            }
+        });
+        return retList;
     }
 
     /**
